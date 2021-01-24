@@ -9,7 +9,21 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  String selectedCurrency = "EUR";
+  String selectedCurrency = "AUD";
+  CoinData coinData = CoinData();
+
+  double BTC = 0;
+  double ETH = 0;
+  double LTC = 0;
+
+  getData() async {
+    BTC = await coinData.getCurrencyData(
+        fromCurrency: "BTC", toCurrency: selectedCurrency);
+    ETH = await coinData.getCurrencyData(
+        fromCurrency: "ETH", toCurrency: selectedCurrency);
+    LTC = await coinData.getCurrencyData(
+        fromCurrency: "LTC", toCurrency: selectedCurrency);
+  }
 
   DropdownButton<String> getDropDownButton(List<String> stringList) {
     List<DropdownMenuItem<String>> dropDownMenuItemList = [];
@@ -24,8 +38,8 @@ class _PriceScreenState extends State<PriceScreen> {
       items: dropDownMenuItemList,
       onChanged: (selcetion) {
         setState(() {
-          print(selcetion);
           selectedCurrency = selcetion;
+          getData();
         });
       },
     );
@@ -39,8 +53,11 @@ class _PriceScreenState extends State<PriceScreen> {
     return CupertinoPicker(
       backgroundColor: Colors.lightBlue,
       itemExtent: 35,
-      onSelectedItemChanged: (selcetion) {
-        print(selcetion);
+      onSelectedItemChanged: (index) {
+        setState(() {
+          selectedCurrency = stringList[index];
+          getData();
+        });
       },
       children: pickerItemList,
     );
@@ -56,37 +73,73 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CryptoCardWidget(
+                currency: "BTC",
+                currencyConvert: BTC,
+                toCurrency: selectedCurrency,
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
+              CryptoCardWidget(
+                currency: "ETH",
+                currencyConvert: ETH,
+                toCurrency: selectedCurrency,
               ),
-            ),
+              CryptoCardWidget(
+                currency: "LTC",
+                currencyConvert: LTC,
+                toCurrency: selectedCurrency,
+              ),
+            ],
           ),
           Container(
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS
-                ? getCupertinoPicker(currenciesList)
-                : getDropDownButton(currenciesList),
+            child: NotificationListener(
+              child: Platform.isIOS
+                  ? getCupertinoPicker(currenciesList)
+                  : getDropDownButton(currenciesList),
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CryptoCardWidget extends StatelessWidget {
+  CryptoCardWidget(
+      {@required this.currencyConvert,
+      @required this.currency,
+      @required this.toCurrency});
+  final double currencyConvert;
+  final String currency;
+  final String toCurrency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+      child: Card(
+        color: Colors.lightBlueAccent,
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+          child: Text(
+            '1 $currency = ${currencyConvert.toStringAsFixed(2)} $toCurrency',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }

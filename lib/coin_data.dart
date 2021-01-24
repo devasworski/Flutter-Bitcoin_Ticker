@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 const List<String> currenciesList = [
   'AUD',
   'BRL',
@@ -28,4 +30,13 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-class CoinData {}
+class CoinData {
+  final String apiBaseUrl = "";
+
+  Future<double> getCurrencyData(
+      {@required String fromCurrency, @required String toCurrency}) async {
+    dynamic jsonResult;
+
+    return 2;
+  }
+}
