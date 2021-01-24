@@ -42,8 +42,6 @@ class CoinData {
       http.Response response =
           await http.get("$apiBaseUrl$fromCurrency$toCurrency");
       if (response.statusCode == 200) {
-        print(response.request);
-        print(jsonDecode(response.body)['last']);
         return jsonDecode(response.body)['last'];
       }
     } catch (e) {
