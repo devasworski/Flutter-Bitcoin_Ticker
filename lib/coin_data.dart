@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 const List<String> currenciesList = [
   'AUD',
@@ -31,12 +33,22 @@ const List<String> cryptoList = [
 ];
 
 class CoinData {
-  final String apiBaseUrl = "";
+  final String apiBaseUrl =
+      "https://apiv2.bitcoinaverage.com/indices/global/ticker/";
 
   Future<double> getCurrencyData(
       {@required String fromCurrency, @required String toCurrency}) async {
-    dynamic jsonResult;
-
-    return 2;
+    try {
+      http.Response response =
+          await http.get("$apiBaseUrl$fromCurrency$toCurrency");
+      if (response.statusCode == 200) {
+        print(response.request);
+        print(jsonDecode(response.body)['last']);
+        return jsonDecode(response.body)['last'];
+      }
+    } catch (e) {
+      print(e);
+    }
+    return 0;
   }
 }

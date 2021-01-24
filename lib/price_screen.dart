@@ -11,18 +11,29 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = "AUD";
   CoinData coinData = CoinData();
-
+  bool isLoading = true;
   double BTC = 0;
   double ETH = 0;
   double LTC = 0;
 
   getData() async {
-    BTC = await coinData.getCurrencyData(
-        fromCurrency: "BTC", toCurrency: selectedCurrency);
-    ETH = await coinData.getCurrencyData(
-        fromCurrency: "ETH", toCurrency: selectedCurrency);
-    LTC = await coinData.getCurrencyData(
-        fromCurrency: "LTC", toCurrency: selectedCurrency);
+    isLoading = true;
+    try {
+      double BTCv = await coinData.getCurrencyData(
+          fromCurrency: "BTC", toCurrency: selectedCurrency);
+      double ETHv = await coinData.getCurrencyData(
+          fromCurrency: "ETH", toCurrency: selectedCurrency);
+      double LTCv = await coinData.getCurrencyData(
+          fromCurrency: "LTC", toCurrency: selectedCurrency);
+      isLoading = false;
+      setState(() {
+        BTC = BTCv;
+        ETH = ETHv;
+        LTC = LTCv;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   DropdownButton<String> getDropDownButton(List<String> stringList) {
@@ -64,6 +75,12 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -80,16 +97,19 @@ class _PriceScreenState extends State<PriceScreen> {
                 currency: "BTC",
                 currencyConvert: BTC,
                 toCurrency: selectedCurrency,
+                isLoading: isLoading,
               ),
               CryptoCardWidget(
                 currency: "ETH",
                 currencyConvert: ETH,
                 toCurrency: selectedCurrency,
+                isLoading: isLoading,
               ),
               CryptoCardWidget(
                 currency: "LTC",
                 currencyConvert: LTC,
                 toCurrency: selectedCurrency,
+                isLoading: isLoading,
               ),
             ],
           ),
@@ -114,10 +134,12 @@ class CryptoCardWidget extends StatelessWidget {
   CryptoCardWidget(
       {@required this.currencyConvert,
       @required this.currency,
-      @required this.toCurrency});
+      @required this.toCurrency,
+      @required this.isLoading});
   final double currencyConvert;
   final String currency;
   final String toCurrency;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +154,9 @@ class CryptoCardWidget extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
           child: Text(
-            '1 $currency = ${currencyConvert.toStringAsFixed(2)} $toCurrency',
+            isLoading
+                ? '1 $currency = ? $toCurrency'
+                : '1 $currency = ${currencyConvert.toStringAsFixed(2)} $toCurrency',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.0,
