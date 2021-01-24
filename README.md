@@ -5,7 +5,7 @@
 
 This app is created as part of the [London App Brewery: Complete Flutter Development Bootcamp](https://www.appbrewery.co/p/flutter-development-bootcamp-with-dart), I have attended on [LinkedInLearning](https://www.linkedin.com/learning/flutter-part-09-dart-cupertino-and-widgets).
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/devasworski/Flutter-Weather?branch=master)](https://bettercodehub.com/)
+[![BCH compliance](https://bettercodehub.com/edge/badge/devasworski/Flutter-Bitcoin_Ticker?branch=master)](https://bettercodehub.com/)
 
 ## The Goal
 
@@ -16,12 +16,13 @@ The objective of this tutorial is to learn about using Cupertino and Material Wi
 
 A crypto currency price checking app. Which will let you monitor your bitcoin investents on the move!
 
-![Finished App](https://github.com/londonappbrewery/Images/blob/master/bitcoin-flutter-demo.gif)
-
 ## Learning Outcome
 
 - How to use the DropdownButton Widget from Material design.
 - How to loop through code using Dart for and for-in loops.
 - How to use Cupertino Widgets in your app.
 - How to check the platform your app is being run on to customise the UI for that platform.
-- Revise previous concepts by completing the challenges.
+- Revise previous concepts by completing the challenges (dynamically updating the UI based on the API response and User input)
+<br><br><br>
+
+![Finished App](https://github.com/londonappbrewery/Images/blob/master/bitcoin-flutter-demo.gif)
