@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -10,24 +11,39 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = "EUR";
 
-  List<DropdownMenuItem<String>> getDropDownMenuItemList(
-      List<String> stringList) {
-    List<DropdownMenuItem<String>> RESULT = [];
+  DropdownButton<String> getDropDownButton(List<String> stringList) {
+    List<DropdownMenuItem<String>> dropDownMenuItemList = [];
     for (String s in stringList) {
-      RESULT.add(DropdownMenuItem(
+      dropDownMenuItemList.add(DropdownMenuItem(
         child: Text(s),
         value: s,
       ));
     }
-    return RESULT;
+    return DropdownButton<String>(
+      value: selectedCurrency,
+      items: dropDownMenuItemList,
+      onChanged: (selcetion) {
+        setState(() {
+          print(selcetion);
+          selectedCurrency = selcetion;
+        });
+      },
+    );
   }
 
-  List<Text> getPickerItems(List<String> stringList) {
-    List<Text> RESULT = [];
+  CupertinoPicker getCupertinoPicker(List<String> stringList) {
+    List<Text> pickerItemList = [];
     for (String s in stringList) {
-      RESULT.add(Text(s));
+      pickerItemList.add(Text(s));
     }
-    return RESULT;
+    return CupertinoPicker(
+      backgroundColor: Colors.lightBlue,
+      itemExtent: 35,
+      onSelectedItemChanged: (selcetion) {
+        print(selcetion);
+      },
+      children: pickerItemList,
+    );
   }
 
   @override
@@ -66,30 +82,12 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: CupertinoPicker(
-              backgroundColor: Colors.lightBlue,
-              itemExtent: 40,
-              onSelectedItemChanged: (selcetion) {
-                print(selcetion);
-              },
-              children: getPickerItems(currenciesList),
-            ),
+            child: Platform.isIOS
+                ? getCupertinoPicker(currenciesList)
+                : getDropDownButton(currenciesList),
           ),
         ],
       ),
     );
   }
 }
-
-/*
-DropdownButton<String>(
-              value: selectedCurrency,
-              items: getDropDownMenuItemList(currenciesList),
-              onChanged: (selcetion) {
-                setState(() {
-                  print(selcetion);
-                  selectedCurrency = selcetion;
-                });
-              },
-            )
- */
